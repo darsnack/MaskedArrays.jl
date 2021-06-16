@@ -1,5 +1,7 @@
 module MaskedArrays
 
+using NNlib
+
 export MaskedArray, MaskedSliceArray
 
 include("types.jl")
