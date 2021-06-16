@@ -13,6 +13,7 @@ function _slicetomask(A, slices::Tuple)
 end
 
 mask(A::AbstractArray, bitmask::AbstractArray{Bool}) = MaskedArray(A, bitmask)
+# must be Vector{<:Integer} not AbstractVector{<:Integer} to avoid method ambiguity
 mask(A::AbstractArray, bitmask::Vector{<:Integer}) = mask(A, _indextomask(A, bitmask))
 mask(A::AbstractArray, slices::Tuple) = MaskedSliceArray(A, slices)
 mask(A::AbstractArray, slice, slices...) = mask(A, (slice, slices...))
