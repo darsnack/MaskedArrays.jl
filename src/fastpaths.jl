@@ -14,7 +14,7 @@ for fconv in (:conv, :depthwiseconv), WT in (MaskedArray, MaskedSliceArray)
                 Δs = pb(Δ)
                 return (Δs[1], Δs[2], w.mask .* Δs[3], Δs[4])
             end
-            return $fconv(x, w, cdims; kw...), $conv_pullback
+            return y, $conv_pullback
         end
 
         function ChainRulesCore.rrule(::typeof($∇conv_data), x, w::$WT, cdims; kwargs...)
