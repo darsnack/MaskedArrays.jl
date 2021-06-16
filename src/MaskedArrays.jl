@@ -1,6 +1,7 @@
 module MaskedArrays
 
 using NNlib
+using ChainRulesCore
 
 export MaskedArray, MaskedSliceArray
 
