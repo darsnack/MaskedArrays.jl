@@ -30,6 +30,7 @@ struct MaskedSliceArray{T, N, S<:AbstractArray{T, N}, R<:Tuple} <: AbstractArray
     function MaskedSliceArray(data::S, slices::R) where {T, N, S<:AbstractArray{T, N}, R<:Tuple}
         length(slices) == N ||
             throw(ArgumentError("MaskedSliceArray(data, slices) expects ndims(data) == length(slices) (got $N != $(length(slices)))."))
+        slices = to_indices(data, slices)
         for (d, (s, is)) in enumerate(zip(size(data), slices))
             all(i -> i ∈ 1:s, is) ||
                 throw(ArgumentError("Attempted to mask out of bounds indices $is ∉ 1:$s at dimension $d."))
