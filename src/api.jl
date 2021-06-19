@@ -1,13 +1,14 @@
 function _indextomask(A, is)
-    bitmask = trues(size(A))
-    bitmask[is] .= 0
+    bitmask = falses(size(A))
+    bitmask[is] .= 1
 
     return bitmask
 end
 function _slicetomask(A, slices::Tuple)
-    slicemask = trues(size(A))
-    is = map(s -> isempty(s) ? Colon() : s, slices)
-    slicemask[is...] .= 0
+    slicemask = falses(size(A))
+    if all(!isempty, slices)
+        slicemask[slices...] .= 1
+    end
 
     return slicemask
 end

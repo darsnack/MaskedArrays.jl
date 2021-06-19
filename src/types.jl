@@ -36,7 +36,7 @@ struct MaskedSliceArray{T, N, S<:AbstractArray{T, N}, R<:Tuple} <: AbstractArray
                 throw(ArgumentError("Attempted to mask out of bounds indices $is ∉ 1:$s at dimension $d."))
         end
 
-        new{T, N, S, R}(data, slices)
+        new{T, N, S, typeof(slices)}(data, slices)
     end
 end
 MaskedSliceArray(data::AbstractArray{<:Any, N}, slices::Vararg{<:Any, N}) where N =
@@ -45,10 +45,10 @@ MaskedSliceArray(data::AbstractArray{<:Any, N}, slices::Vararg{<:Any, N}) where 
 Base.size(A::MaskedSliceArray) = size(A.data)
 
 Base.getindex(A::MaskedSliceArray{T, N}, I::Vararg{Int, N}) where {T, N} =
-    any(i ∈ s for (i, s) in zip(I, A.slices)) ? zero(T) : A.data[I...]
+    any(i ∉ s for (i, s) in zip(I, A.slices)) ? zero(T) : A.data[I...]
 
 function Base.setindex!(A::MaskedSliceArray{<:Any, N}, v, I::Vararg{Int, N}) where N
-    if all(i ∉ s for (i, s) in zip(I, A.slices))
+    if all(i ∈ s for (i, s) in zip(I, A.slices))
         A.data[I...] = v
     end
 
