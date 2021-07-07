@@ -20,7 +20,7 @@ mask(A::AbstractArray, slices::Tuple) = MaskedSliceArray(A, slices)
 mask(A::AbstractArray, slice, slices...) = mask(A, (slice, slices...))
 mask(A::MaskedArray, bitmask::AbstractArray{Bool}) = mask(A.data, A.mask .* bitmask)
 mask(A::MaskedSliceArray, slices::Tuple) =
-    mask(A.data, map((s, s̄) -> union(s, s̄), A.slices, slices))
+    mask(A.data, map((s, s̄) -> union(s, s̄), A.slices, to_indices(A.data, slices)))
 mask(A::MaskedArray, slices::Tuple) = mask(A.data, A.mask .* _slicetomask(A, slices))
 mask(A::MaskedSliceArray, bitmask::AbstractArray{Bool}) =
     mask(A.data, bitmask .* _slicetomask(A, A.slices))
