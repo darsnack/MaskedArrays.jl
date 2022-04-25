@@ -57,6 +57,9 @@ function Base.setindex!(A::MaskedSliceArray{<:Any, N}, v, I::Vararg{Int, N}) whe
     return A
 end
 
+Base.similar(A::MaskedSliceArray, ::Type{S}, dims::Dims) where S =
+    MaskedSliceArray(similar(A.data, S, dims), ntuple(_ -> Colon(), ndims(A)))
+
 function bitmask(x::MaskedSliceArray)
     slicemask = falses(size(A))
     slices = x.slices
