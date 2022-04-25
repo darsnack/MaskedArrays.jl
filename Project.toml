@@ -1,7 +1,10 @@
 name = "MaskedArrays"
 uuid = "e3e6debb-e142-42bc-8e83-ba8646d1d252"
 authors = ["Kyle Daruwalla <daruwalla.k.public@icloud.com>"]
-version = "0.1.0"
+version = "0.1.1"
+
+[deps]
+ArrayInterface = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
 
 [compat]
 julia = "1.6"

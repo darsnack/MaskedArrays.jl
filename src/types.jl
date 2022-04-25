@@ -23,6 +23,8 @@ end
 Base.similar(A::MaskedArray, ::Type{S}, dims::Dims) where S =
     MaskedArray(similar(A.data, S, dims), trues(dims))
 
+bitmask(x::MaskedArray) = x.mask
+
 struct MaskedSliceArray{T, N, S<:AbstractArray{T, N}, R<:Tuple} <: AbstractArray{T, N}
     data::S
     slices::R
@@ -54,3 +56,18 @@ function Base.setindex!(A::MaskedSliceArray{<:Any, N}, v, I::Vararg{Int, N}) whe
 
     return A
 end
+
+function bitmask(x::MaskedSliceArray)
+    slicemask = falses(size(A))
+    slices = x.slices
+    if all(!isempty, slices)
+        slicemask[slices...] .= 1
+    end
+
+    return slicemask
+end
+
+ArrayInterface.restructure(x::MaskedArray, y) =
+    mask(reshape(y, size(x)), trues(size(x)))
+ArrayInterface.restructure(x::MaskedSliceArray, y) =
+    mask(reshape(y, size(x)), ntuple(_ -> Colon(), ndims(x)))
