@@ -1,10 +1,12 @@
-struct MaskedArray{T, N, S<:AbstractArray{T, N}} <: AbstractArray{T, N}
+struct MaskedArray{T, N, S<:AbstractArray{T, N}, B<:AbstractArray{Bool, N}} <: AbstractArray{T, N}
     data::S
-    mask::BitArray{N}
+    mask::B
 end
 
 MaskedArray(data::AbstractArray, mask::AbstractArray{Bool}) =
     MaskedArray(data, BitArray(mask))
+MaskedArray(data::AbstractGPUArray, mask::AbstractArray{Bool}) =
+    MaskedArray(data, mask)
 
 Base.size(A::MaskedArray) = size(A.data)
 
@@ -58,7 +60,7 @@ function Base.setindex!(A::MaskedSliceArray{<:Any, N}, v, I::Vararg{Int, N}) whe
 end
 
 Base.similar(A::MaskedSliceArray, ::Type{S}, dims::Dims) where S =
-    MaskedSliceArray(similar(A.data, S, dims), ntuple(_ -> Colon(), ndims(A)))
+    MaskedSliceArray(similar(A.data, S, dims), ntuple(_ -> Colon(), length(dims)))
 
 function bitmask(x::MaskedSliceArray)
     slicemask = falses(size(A))
@@ -67,7 +69,7 @@ function bitmask(x::MaskedSliceArray)
         slicemask[slices...] .= 1
     end
 
-    return slicemask
+    return adapt(typeof(x.data), slicemask)
 end
 
 ArrayInterface.restructure(x::MaskedArray, y) =

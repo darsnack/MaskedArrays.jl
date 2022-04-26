@@ -1,5 +1,7 @@
 module MaskedArrays
 
+using GPUArrays
+using Adapt
 import ArrayInterface
 
 export MaskedArray, MaskedSliceArray

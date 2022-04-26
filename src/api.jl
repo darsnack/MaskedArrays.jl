@@ -2,7 +2,7 @@ function _indextomask(A, is)
     bitmask = falses(size(A))
     bitmask[is] .= 1
 
-    return bitmask
+    return adapt(typeof(A), bitmask)
 end
 function _slicetomask(A, slices::Tuple)
     slicemask = falses(size(A))
@@ -10,7 +10,7 @@ function _slicetomask(A, slices::Tuple)
         slicemask[slices...] .= 1
     end
 
-    return slicemask
+    return adapt(typeof(A), slicemask)
 end
 
 """
@@ -95,12 +95,13 @@ julia> mask(x, 1:2, :, :)
 """
 mask(A::AbstractArray, slices::Tuple) = MaskedSliceArray(A, slices)
 mask(A::AbstractArray, slice, slices...) = mask(A, (slice, slices...))
-mask(A::MaskedArray, bitmask::AbstractArray{Bool}) = mask(A.data, A.mask .* bitmask)
+mask(A::MaskedArray, bitmask::AbstractArray{Bool}) =
+    mask(A.data, A.mask .* adapt(typeof(A.mask), bitmask))
 mask(A::MaskedSliceArray, slices::Tuple) =
     mask(A.data, map((s, s̄) -> union(s, s̄), A.slices, to_indices(A.data, slices)))
-mask(A::MaskedArray, slices::Tuple) = mask(A.data, A.mask .* _slicetomask(A, slices))
+mask(A::MaskedArray, slices::Tuple) = mask(A.data, A.mask .* _slicetomask(A.data, slices))
 mask(A::MaskedSliceArray, bitmask::AbstractArray{Bool}) =
-    mask(A.data, bitmask .* _slicetomask(A, A.slices))
+    mask(A.data, adapt(typeof(A.data), bitmask .* _slicetomask(A.data, A.slices)))
 
 """
     unmask(A::MaskedArray)
@@ -118,4 +119,4 @@ unmask(A::MaskedSliceArray) = A.data
 Make a masked array permanent by returning the original data with the mask applied.
 """
 freeze(A::MaskedArray) = A.data .* A.mask
-freeze(A::MaskedSliceArray) = A.data .* _slicetomask(A, A.slices)
+freeze(A::MaskedSliceArray) = A.data .* bitmask(A)
