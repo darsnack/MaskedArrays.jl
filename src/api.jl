@@ -118,8 +118,11 @@ unmask(A::MaskedSliceArray) = A.data
 """
     freeze(A::MaskedArray)
     freeze(A::MaskedSliceArray)
+    freeze(A)
 
 Make a masked array permanent by returning the original data with the mask applied.
+This is a no-op when `A` is not a masked array type.
 """
 freeze(A::MaskedArray) = A.data .* A.mask
 freeze(A::MaskedSliceArray) = A.data .* bitmask(A)
+freeze(A) = A
