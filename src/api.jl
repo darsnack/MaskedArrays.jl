@@ -68,7 +68,9 @@ julia> mask(x, [1, 5])
 ```
 """
 mask(A::AbstractArray, bitmask::AbstractVector{<:CartesianIndex}) = mask(A, _indextomask(A, bitmask))
-mask(A::AbstractArray, bitmask::AbstractVector{<:Integer}) = mask(A, _indextomask(A, bitmask))
+mask(A::AbstractArray, bitmask::AbstractVector{<:Integer}) = MaskedArray(A, _indextomask(A, bitmask))
+mask(A::MaskedArray, bitmask::AbstractVector{<:Integer}) = mask(A, _indextomask(A, bitmask))
+mask(A::MaskedSliceArray, bitmask::AbstractVector{<:Integer}) = mask(A, _indextomask(A, bitmask))
 
 """
     mask(A::AbstractArray, slices::Tuple)
