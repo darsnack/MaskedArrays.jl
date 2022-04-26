@@ -62,9 +62,9 @@ end
 Base.similar(A::MaskedSliceArray, ::Type{S}, dims::Dims) where S =
     MaskedSliceArray(similar(A.data, S, dims), ntuple(_ -> Colon(), length(dims)))
 
-function bitmask(x::MaskedSliceArray)
+function bitmask(A::MaskedSliceArray)
     slicemask = fill!(similar(A.data, Bool), false)
-    slices = x.slices
+    slices = A.slices
     if all(!isempty, slices)
         slicemask[slices...] .= 1
     end
