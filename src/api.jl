@@ -99,7 +99,7 @@ mask(A::AbstractArray, slice1, slice2, slices...) = mask(A, (slice1, slice2, sli
 mask(A::MaskedArray, bitmask::AbstractArray{Bool}) =
     mask(A.data, A.mask .* adapt(typeof(A.mask), bitmask))
 mask(A::MaskedSliceArray, slices::Tuple) =
-    mask(A.data, map((s, s̄) -> union(s, s̄), A.slices, to_indices(A.data, slices)))
+    mask(A.data, map((s, s̄) -> intersect(s, s̄), A.slices, to_indices(A.data, slices)))
 mask(A::MaskedArray, slices::Tuple) = mask(A.data, A.mask .* _slicetomask(A.data, slices))
 function mask(A::MaskedSliceArray, bitmask::AbstractArray{Bool})
     slicemask = _slicetomask(A.data, A.slices)
