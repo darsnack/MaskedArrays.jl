@@ -5,8 +5,8 @@ end
 
 MaskedArray(data::AbstractArray, mask::AbstractArray{Bool}) =
     MaskedArray(data, BitArray(mask))
-MaskedArray(data::AbstractGPUArray, mask::AbstractArray{Bool}) =
-    MaskedArray(data, mask)
+MaskedArray(data::S, mask::B) where {S<:AbstractGPUArray, B<:AbstractArray{Bool}} =
+    MaskedArray{S, B}(data, mask)
 
 Base.size(A::MaskedArray) = size(A.data)
 
