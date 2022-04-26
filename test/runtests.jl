@@ -30,3 +30,12 @@ end
     @test freeze(mask(x, m)) isa Array
     @test count(iszero, freeze(mask(x, m))) == count(iszero, m)
 end
+
+@testset "fastops" begin
+    x = mask(rand(4, 5), [1, 4, 10])
+    y = rand(5, 10)
+    @test x * y == x.data .* MaskedArrays.bitmask(x) * y
+
+    x = mask(rand(4, 5), :, 1:2)
+    @test x * y == x.data .* MaskedArrays.bitmask(x) * y
+end
