@@ -46,8 +46,8 @@ julia> mask(x, m)
 mask(A::AbstractArray, bitmask::AbstractArray{Bool}) = MaskedArray(A, bitmask)
 
 """
-    mask(A::AbstractArray, bitmask::Vector{<:CartesianIndex})
-    mask(A::AbstractArray, bitmask::Vector{<:Integer})
+    mask(A::AbstractArray, bitmask::AbstractVector{<:CartesianIndex})
+    mask(A::AbstractArray, bitmask::AbstractVector{<:Integer})
 
 Mask `A` by zeroing out any elements at indices not in `bitmask`.
 
@@ -67,9 +67,8 @@ julia> mask(x, [1, 5])
  0.0  0.0
 ```
 """
-mask(A::AbstractArray, bitmask::Vector{<:CartesianIndex}) = mask(A, _indextomask(A, bitmask))
-# must be Vector{<:Integer} not AbstractVector{<:Integer} to avoid method ambiguity
-mask(A::AbstractArray, bitmask::Vector{<:Integer}) = mask(A, _indextomask(A, bitmask))
+mask(A::AbstractArray, bitmask::AbstractVector{<:CartesianIndex}) = mask(A, _indextomask(A, bitmask))
+mask(A::AbstractArray, bitmask::AbstractVector{<:Integer}) = mask(A, _indextomask(A, bitmask))
 
 """
     mask(A::AbstractArray, slices::Tuple)
@@ -94,7 +93,7 @@ julia> mask(x, 1:2, :, :)
 ```
 """
 mask(A::AbstractArray, slices::Tuple) = MaskedSliceArray(A, slices)
-mask(A::AbstractArray, slice, slices...) = mask(A, (slice, slices...))
+mask(A::AbstractArray, slice1, slice2, slices...) = mask(A, (slice1, slice2, slices...))
 mask(A::MaskedArray, bitmask::AbstractArray{Bool}) =
     mask(A.data, A.mask .* adapt(typeof(A.mask), bitmask))
 mask(A::MaskedSliceArray, slices::Tuple) =
