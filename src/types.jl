@@ -63,13 +63,13 @@ Base.similar(A::MaskedSliceArray, ::Type{S}, dims::Dims) where S =
     MaskedSliceArray(similar(A.data, S, dims), ntuple(_ -> Colon(), length(dims)))
 
 function bitmask(x::MaskedSliceArray)
-    slicemask = falses(size(A))
+    slicemask = fill!(similar(A.data, Bool), false)
     slices = x.slices
     if all(!isempty, slices)
         slicemask[slices...] .= 1
     end
 
-    return adapt(typeof(x.data), slicemask)
+    return slicemask
 end
 
 ArrayInterface.restructure(x::MaskedArray, y) =

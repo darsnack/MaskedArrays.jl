@@ -1,16 +1,16 @@
 function _indextomask(A, is)
-    bitmask = falses(size(A))
+    bitmask = fill!(similar(A, Bool), false)
     bitmask[is] .= 1
 
-    return adapt(typeof(A), bitmask)
+    return bitmask
 end
 function _slicetomask(A, slices::Tuple)
-    slicemask = falses(size(A))
+    slicemask = fill!(similar(A, Bool), false)
     if all(!isempty, slices)
         slicemask[slices...] .= 1
     end
 
-    return adapt(typeof(A), slicemask)
+    return slicemask
 end
 
 """
@@ -100,8 +100,10 @@ mask(A::MaskedArray, bitmask::AbstractArray{Bool}) =
 mask(A::MaskedSliceArray, slices::Tuple) =
     mask(A.data, map((s, s̄) -> union(s, s̄), A.slices, to_indices(A.data, slices)))
 mask(A::MaskedArray, slices::Tuple) = mask(A.data, A.mask .* _slicetomask(A.data, slices))
-mask(A::MaskedSliceArray, bitmask::AbstractArray{Bool}) =
-    mask(A.data, adapt(typeof(A.data), bitmask .* _slicetomask(A.data, A.slices)))
+function mask(A::MaskedSliceArray, bitmask::AbstractArray{Bool})
+    slicemask = _slicetomask(A.data, A.slices)
+    mask(A.data, adapt(typeof(slicemask), bitmask .* slicemask))
+end
 
 """
     unmask(A::MaskedArray)
