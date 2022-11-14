@@ -72,8 +72,3 @@ function bitmask(A::MaskedSliceArray)
 
     return slicemask
 end
-
-ArrayInterface.restructure(x::MaskedArray, y) =
-    mask(reshape(y, size(x)), trues(size(x)))
-ArrayInterface.restructure(x::MaskedSliceArray, y) =
-    mask(reshape(y, size(x)), ntuple(_ -> Colon(), ndims(x)))
