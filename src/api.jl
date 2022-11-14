@@ -95,7 +95,7 @@ julia> mask(x, 1:2, :, :)
 ```
 """
 mask(A::AbstractArray, slices::Tuple) = MaskedSliceArray(A, slices)
-mask(A::AbstractArray, slice1, slice2, slices...) = mask(A, (slice1, slice2, slices...))
+mask(A::AbstractArray, slice, slices...) = mask(A, (slice, slices...))
 mask(A::MaskedArray, bitmask::AbstractArray{Bool}) =
     mask(A.data, A.mask .* adapt(typeof(A.mask), bitmask))
 mask(A::MaskedSliceArray, slices::Tuple) =

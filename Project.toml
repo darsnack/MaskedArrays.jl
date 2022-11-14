@@ -1,7 +1,7 @@
 name = "MaskedArrays"
 uuid = "e3e6debb-e142-42bc-8e83-ba8646d1d252"
 authors = ["Kyle Daruwalla <daruwalla.k.public@icloud.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"

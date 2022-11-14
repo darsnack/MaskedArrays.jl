@@ -43,7 +43,8 @@ struct MaskedSliceArray{T, N, S<:AbstractArray{T, N}, R<:Tuple} <: AbstractArray
         new{T, N, S, typeof(slices)}(data, slices)
     end
 end
-MaskedSliceArray(data::AbstractArray{<:Any, N}, slices::Vararg{<:Any, N}) where N =
+MaskedSliceArray(data::AbstractArray{<:Any, N},
+                 slices::Vararg{<:Union{Colon, AbstractVector}, N}) where N =
     MaskedSliceArray(data, slices)
 
 Base.size(A::MaskedSliceArray) = size(A.data)
